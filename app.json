@@ -8,6 +8,16 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "extra": {
+      "API_URL": "https://fitness-api-o543.onrender.com",
+      "API_URL2": "http://localhost:3000",
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "7b11fc4a-0c7b-4243-929c-da90d6b31f46"
+      }
+    },
     "ios": {
       "supportsTablet": true
     },
@@ -15,7 +25,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.annous246.react_native_app"
     },
     "web": {
       "bundler": "metro",
