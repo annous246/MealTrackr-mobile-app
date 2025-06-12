@@ -6,6 +6,10 @@ Food macros tracking app
 DEMO SCREENSHOTS :
 ![login](https://github.com/user-attachments/assets/bf6426fe-5af7-4122-bcfe-c48df12c35f6)
 ![signup](https://github.com/user-attachments/assets/e11a73e5-c72d-4ff5-8319-d66c1faaaf52)
+![1](https://github.com/user-attachments/assets/df67ecc7-fd1b-4a87-807a-8a41d387ab7b)
+![2](https://github.com/user-attachments/assets/68769623-7a92-4cb4-8370-fa137c8c5043)
+![3](https://github.com/user-attachments/assets/b80c6e76-e663-48da-a0cc-1eecbe444956)
+![done starter](https://github.com/user-attachments/assets/72510377-707b-49d4-ba08-b24576d3baa9)
 ![profile](https://github.com/user-attachments/assets/ef606b66-4a3c-40ff-ba9c-fef3da6a74ea)
 ![add](https://github.com/user-attachments/assets/3f3eb88a-3291-441c-8116-f72826fe540e)
 ![resetter](https://github.com/user-attachments/assets/461c3b71-8d3d-40b9-a889-21ae5a74c99c)
@@ -15,7 +19,6 @@ DEMO SCREENSHOTS :
 ![swipe](https://github.com/user-attachments/assets/82993186-87c6-4aba-84cf-863f2505c14c)
 ![consumed](https://github.com/user-attachments/assets/c31e470a-807a-4c3d-af3a-f8993c8f7ada)
 ![consumed details](https://github.com/user-attachments/assets/73bbc9de-4d12-4e42-96c6-d1fabb3f3f09)
-
 
 
 
