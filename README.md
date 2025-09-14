@@ -102,5 +102,3 @@ See the LICENSE
 
 
 ---
-
-Bro, do you want me to also add a **badges section** (like downloads, stars, ve
