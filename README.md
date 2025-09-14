@@ -13,10 +13,11 @@ Add meals once, then swipe daily to log them — fast, easy, and consistent.
 
 ## ✨ Features
 
-- 🥗 Add your meals one time only
+- 🥗 Add your meals one time only with AI
 - 👆 Swipe daily to log meals instantly
 - 📊 Track your eating habits with ease
 - 📱 Clean and minimal UI
+- 🤖 Powered by AI using OpenAI to assist with meal tracking and suggestions
 ## 🚀 Installation
 
 ```bash
