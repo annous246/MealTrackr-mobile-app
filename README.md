@@ -2,12 +2,32 @@
 <p align="center"> <img src="assets/screenshots/icon.png" alt="icon" width="250"/> </p>
 
 # <h1 align="center">Swipeat</h1>
-
-
 <p align="center">
-Swipeat is a simple and efficient meal tracking  cross-platform App.  
+Swipeat is a simple and efficient meal tracking  <strong> cross-platform </strong>App.  
 Add meals once, then swipe daily to log them — fast, easy, and consistent.
 </p>
+
+![React Native](https://img.shields.io/badge/-React_Native-05122A?style=flat&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) 
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+
+## Backend
+![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB) 
+![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white) 
+![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB) 
+![Mongoose](https://img.shields.io/badge/mongoose-%23323330.svg?style=for-the-badge&logo=mongoose&logoColor=890000)
+![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
+## DataBase
+![PostgreSQL](https://img.shields.io/badge/postgresql-4169e1?style=for-the-badge&logo=postgresql&logoColor=white) 
+
+## AI
+
+![Azure AI](https://img.shields.io/badge/Azure%20AI-Inference-blue?logo=microsoftazure)
+![GitHub Models](https://img.shields.io/badge/GitHub%20Models-gpt--4.1-black?logo=github)
+[![ChatGPT](https://img.shields.io/badge/ChatGPT-74aa9c?logo=openai&logoColor=white)](#)
+![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4.1-412991?logo=openai)
+
+(soon on [![Google Play Store](https://img.shields.io/badge/Google_Play-414141?logo=google-play&logoColor=white)](#) )
 
 ---
 
