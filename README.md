@@ -5,7 +5,7 @@
 
 
 <p align="center">
-Swipeat is a simple and efficient meal tracking app.  
+Swipeat is a simple and efficient meal tracking  cross-platform App.  
 Add meals once, then swipe daily to log them — fast, easy, and consistent.
 </p>
 
