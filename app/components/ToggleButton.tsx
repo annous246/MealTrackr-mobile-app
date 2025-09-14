@@ -41,7 +41,7 @@ const ToggleButton = ({
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-        <Text style={styles.md}>{mode1}(Soon)</Text>
+        <Text style={styles.md}>{mode1}</Text>
         <Text style={styles.md}>{mode2}</Text>
       </View>
       <TouchableOpacity onPress={handleToggle} style={styles.toggle}>
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   },
   md: { fontSize: 10 },
   button: {
-    backgroundColor: "white",
+    backgroundColor: "black",
     height: 15,
     width: 15,
     borderRadius: 500,

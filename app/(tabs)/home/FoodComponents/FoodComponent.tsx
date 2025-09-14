@@ -29,6 +29,7 @@ import Animated, {
 import Constants from "expo-constants";
 import { Post } from "@/app/services/api";
 import { TabsContext } from "@/app/context/TabsProvider";
+import { notificationContext } from "@/app/context/NotificationProvider";
 const { height: ScreenHeight, width: screenWidth } = Dimensions.get("window");
 const FoodComponent = ({
   food,
@@ -55,9 +56,13 @@ const FoodComponent = ({
   const opacityValue = useSharedValue(1);
   function redirect() {
     setCurrentFood(food);
-    setStatus(true);
+    setTimeout(() => {
+      setStatus(true);
+    }, 500);
   }
   const TabSettings = useContext(TabsContext);
+  const NotificationSettings = useContext(notificationContext);
+
   const RemovalThreashold = screenWidth / 3;
   const infoStyle = {
     width: 40,
@@ -127,7 +132,7 @@ const FoodComponent = ({
       carbs: food.servings * food.carbs,
     });
 
-    return ret.ok;
+    return ret;
   }
   async function addConsumed() {
     const ret = await Post(API_URL + "/foods/consumed/add", {
@@ -135,7 +140,7 @@ const FoodComponent = ({
       id: food.id,
     });
 
-    return ret.ok;
+    return ret;
   }
   async function remove() {
     //add to macros
@@ -146,7 +151,7 @@ const FoodComponent = ({
     setProteinProgress((prev: number) => prev + food.servings * food.protein);
     const ret = await addMacros();
     const ret2 = await addConsumed();
-    if (ret === 1 && ret2 === 1) {
+    if (ret.ok === 1 && ret2.ok === 1) {
       //remove food
       setFoodList((prev: foodType[]) => {
         const fp: foodType[] = prev.slice(
@@ -159,8 +164,16 @@ const FoodComponent = ({
         return [...fp, ...sp];
       });
       TabSettings.setFoodUpdate((prev: boolean) => !prev);
+      NotificationSettings.notify(ret.message, 0);
     } else {
       reverse();
+      console.log("rev");
+      if (ret.ok !== 1) {
+        NotificationSettings.notify(ret.message, 2);
+      }
+      if (ret2.ok !== 1) {
+        NotificationSettings.notify(ret2.message, 2);
+      }
     }
   }
   async function deletefood() {
@@ -168,7 +181,9 @@ const FoodComponent = ({
 
     if (res.ok === 1) {
       TabSettings.setFoodUpdate((prev: boolean) => !prev);
+      NotificationSettings.notify(res.message, 0);
     } else {
+      NotificationSettings.notify(res.message, 2);
     }
   }
   function reverse() {
@@ -221,7 +236,7 @@ const FoodComponent = ({
   });
 
   return (
-    <GestureHandlerRootView style={{ flex: 1, width: "80%" }}>
+    <GestureHandlerRootView style={{ width: "80%" }}>
       <PanGestureHandler
         onGestureEvent={handleAdding}
         activeOffsetX={[-10, 10]}

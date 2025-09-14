@@ -5,6 +5,7 @@ import Scroller2 from "./Scrollers/Scroller2";
 import Scroller3 from "./Scrollers/Scroller3";
 import ProgressBar from "./statusBar/ProgressBar";
 import Scroller4 from "./Scrollers/Scroller4";
+import Scroller5 from "./Scrollers/Scroller5";
 
 const ScrollerContainer = ({
   setNext: setNext,
@@ -46,6 +47,7 @@ const ScrollerContainer = ({
       <Scroller1 setNext={setNext} pagination={pagination} />
       <Scroller2 setNext={setNext} pagination={pagination} />
       <Scroller3 setNext={setNext} pagination={pagination} />
+      <Scroller5 setNext={setNext} pagination={pagination} />
       <Scroller4 pagination={pagination} />
     </Animated.View>
   );

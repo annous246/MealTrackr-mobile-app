@@ -13,15 +13,23 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Main from "./main";
 import { StepperProvider } from "./context/StepperProvider";
 import { TabsProvider } from "./context/TabsProvider";
+import { NotificationProvider } from "./context/NotificationProvider";
+import NotificationView from "./context/NotificationView";
+import { DateProvider } from "./context/DateProvider";
 export default function RootLayout() {
   //!!!!!!!!!!!!!!! dont touch this code every (security measures)
   return (
-    <TabsProvider>
-      <StepperProvider>
-        <AuthProvider>
-          <Main />
-        </AuthProvider>
-      </StepperProvider>
-    </TabsProvider>
+    <DateProvider>
+      <TabsProvider>
+        <StepperProvider>
+          <AuthProvider>
+            <NotificationView />
+            <NotificationProvider>
+              <Main />
+            </NotificationProvider>
+          </AuthProvider>
+        </StepperProvider>
+      </TabsProvider>
+    </DateProvider>
   );
 }

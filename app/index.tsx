@@ -7,26 +7,50 @@ import {
   TouchableOpacity,
   Animated,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import icons from "./constants/icons";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import LottieView from "lottie-react-native";
+import animations from "./constants/animations";
+import { AuthContext } from "./context/AuthProvider";
+import LoadingComponent from "./components/loadingComponent";
 const App = () => {
   const [logged, setLogged] = useState<Boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const AuthSettings = useContext(AuthContext);
   async function initilize() {
-    const val = await AsyncStorage.getItem("userToken");
-    console.log("val");
-    console.log(val);
-    setLogged(val != null);
-    //8njknkn
+    const localToken = await AsyncStorage.getItem("userToken");
+    setLogged(localToken != null);
+    if (AuthSettings.userToken == null && localToken) {
+      //defferential then load till equalized
+      setLoading(true);
+    }
+    //8njknk
   }
+  /*
+  useEffect(() => {
+    setLogged(AuthSettings.userToken != null);
+  }, [AuthSettings.userToken]);
+*/
   useEffect(() => {
     initilize();
   }, []);
+  useEffect(() => {
+    console.log("logged");
+    console.log(logged);
+  }, [logged]);
+  useEffect(() => {
+    console.log("loading");
+    console.log(loading);
+  }, [loading]);
   function handlePress() {
     router.push("/sign-in");
+  }
+  function handleSecondPress() {
+    router.push("/sign-up");
   }
   const translate = useRef(new Animated.Value(-100)).current;
   const opacityIn = useRef(new Animated.Value(0)).current;
@@ -47,26 +71,57 @@ const App = () => {
     // setTimeout(() => (mainTitle.current.props.style.opacity = 1));
   }, []);
   return (
-    <ScrollView contentContainerStyle={{ height: "100%" }}>
+    <ScrollView
+      style={{ backgroundColor: "white" }}
+      contentContainerStyle={{ height: "100%" }}
+    >
+      {logged && <LoadingComponent loading={loading} />}
       <View style={styles.appContainer}>
         {/*animated view*/}
         <Animated.View
           style={[styles.mainlogo, { transform: [{ translateY: translate }] }]}
         >
-          <Image style={styles.logo} resizeMode="contain" source={icons.logo} />
+          <LottieView
+            style={{
+              marginTop: -100,
+              marginBottom: 0,
+              width: 300,
+              height: 300,
+            }}
+            autoPlay
+            loop={true}
+            source={animations.food}
+          />
           <Animated.Text
             ref={mainTitle}
             style={{ ...styles.logotext, opacity: opacityIn }}
           >
-            Coffee
+            Swipeat
           </Animated.Text>
         </Animated.View>
-
-        <TouchableOpacity onPress={handlePress} style={styles.button}>
-          <Text style={{ color: "white" }}>
-            {!logged ? "Login With Email" : "Logged In"}
-          </Text>
-        </TouchableOpacity>
+        {!logged ? (
+          <>
+            <TouchableOpacity
+              onPress={handlePress}
+              style={{ ...styles.button, marginBottom: 10 }}
+            >
+              <Text style={{ color: "white", textAlign: "center" }}>
+                Login With Email
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleSecondPress} style={styles.button}>
+              <Text style={{ color: "white", textAlign: "center" }}>
+                Create New Account
+              </Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <TouchableOpacity style={styles.button}>
+            <Text style={{ color: "white", textAlign: "center" }}>
+              Logged In
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </ScrollView>
   );
@@ -79,16 +134,20 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#F3F6F6",
+    backgroundColor: "white",
   },
   logotext: {
     fontWeight: "bold",
-    fontSize: 50,
+    fontSize: 30,
     color: "#f35d30",
+    margin: "auto",
+    marginTop: "0%",
+    fontFamily: "sans-serif-thin",
   },
   logo: {
-    width: 100,
-    height: 100,
+    alignSelf: "center",
+    width: 200,
+    height: 200,
   },
   text: {
     width: 100,
@@ -102,10 +161,10 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 10,
-    paddingInline: 20,
     borderRadius: 5,
     borderWidth: 2,
     borderColor: "#f35d30",
     backgroundColor: "#f35d30",
+    width: 200,
   },
 });

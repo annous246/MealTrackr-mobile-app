@@ -69,6 +69,7 @@ const BorderPieChart = ({
       <Svg width={160} height={160}>
         <G rotation={-90} origin={`${cx}, ${cy}`}>
           {data.map((slice, index) => {
+            if (slice.value == 0) return <React.Fragment key={index} />;
             const percent = slice.value / total;
             const arcLength = percent * circumference;
             const offsetRotation = rotation;

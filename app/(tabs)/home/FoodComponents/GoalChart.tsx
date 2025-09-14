@@ -100,7 +100,7 @@ const GoalChart = ({
         </Text>
         {goalValue > 0 ? (
           <Text style={{ color: "#666", fontSize: 12 }}>
-            {progressValue.toFixed(2)} / {goalValue}
+            {progressValue.toFixed(2)} / {goalValue.toFixed(2)}
           </Text>
         ) : (
           ""

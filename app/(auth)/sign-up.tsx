@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import icons from "../constants/icons";
 import CustomButton from "../components/customButton";
 import { Link, router } from "expo-router";
@@ -19,26 +19,11 @@ import LoadingComponent from "../components/loadingComponent";
 import { Get, Post } from "../services/api";
 import { ScrollView } from "react-native-gesture-handler";
 import Constants from "expo-constants";
+import { notificationContext } from "../context/NotificationProvider";
 
 const { API_URL } = Constants.expoConfig?.extra;
-async function signup(
-  password: string,
-  confirmPassword: string,
-  email: string,
-  username: string
-) {
-  const ret = await Post(API_URL + "/auth/sign-up", {
-    password: password,
-    confirmPassword: confirmPassword,
-    email: email,
-    username: username,
-  });
-  console.log(ret);
-  if (ret.ok == 1) {
-    router.push("/sign-in");
-  }
-}
 const SignUp = () => {
+  const NotificationSettings = useContext(notificationContext);
   const usernameInput = useRef<TextInput>(null);
   const emailInput = useRef<TextInput>(null);
   const passwordInput = useRef<TextInput>(null);
@@ -57,6 +42,26 @@ const SignUp = () => {
   const [psPlaceholder, setPsPlaceholder] = useState<string>("*********");
   const [cpsPlaceholder, setCpsPlaceholder] = useState<string>("*********");
 
+  async function signup(
+    password: string,
+    confirmPassword: string,
+    email: string,
+    username: string
+  ) {
+    console.log("here");
+    const ret = await Post(API_URL + "/auth/sign-up", {
+      password: password,
+      confirmPassword: confirmPassword,
+      email: email,
+      username: username,
+    });
+    console.log("ret");
+    console.log(ret);
+    if (ret.ok == 1) {
+      router.push("/sign-in");
+      NotificationSettings.notify(ret.message, 0);
+    } else NotificationSettings.notify(ret.message, 2);
+  }
   function handleUnFocus() {
     setUnPlaceholder("");
   }
@@ -89,24 +94,16 @@ const SignUp = () => {
     router.push("/");
   }
   function handleEmail(text: string) {
-    if (text && text.length) {
-      setEmail(text);
-    }
+    setEmail(text);
   }
   function handleUsername(text: string) {
-    if (text && text.length) {
-      setUsername(text);
-    }
+    setUsername(text);
   }
   function handlePassword(text: string) {
-    if (text && text.length) {
-      setPassword(text);
-    }
+    setPassword(text);
   }
   function handleConfirmPassword(text: string) {
-    if (text && text.length) {
-      setConfirmPassword(text);
-    }
+    setConfirmPassword(text);
   }
 
   const singupStyle = {
@@ -174,18 +171,21 @@ const SignUp = () => {
           <Text style={styles.subTitleStyle}>Sign up with</Text>
           <View style={styles.subContainer}>
             <CustomButton
+              onPress={() => {} /*promptAsync()*/}
               currentIcon={icons.google}
-              title="Google"
+              title={"Google \n (soon)"}
               style={singupStyle}
               iconStyle={iconStyle}
               textStyle={textStyle}
+              disabled={true}
             />
             <CustomButton
               currentIcon={icons.home}
-              title="Linked-In"
+              title={"Linked-In \n (soon)"}
               style={singupStyle}
               iconStyle={iconStyle}
               textStyle={textStyle}
+              disabled={true}
             />
           </View>
 
@@ -224,6 +224,7 @@ const SignUp = () => {
             <View style={styles.inputField}>
               <Text style={styles.inputLabel}>Password</Text>
               <TextInput
+                secureTextEntry={true}
                 ref={passwordInput}
                 onFocus={handlePsFocus}
                 onBlur={handlePsUnfocus}
@@ -239,6 +240,7 @@ const SignUp = () => {
               <Text style={styles.inputLabel}>Confirm Password</Text>
 
               <TextInput
+                secureTextEntry={true}
                 ref={confirmPasswordInput}
                 onFocus={handleCpsFocus}
                 onBlur={handleCpsUnfocus}
@@ -380,5 +382,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: "#ff9b7c",
     color: "#ff9b7c",
+    height: 50,
   },
 });

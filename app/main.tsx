@@ -17,6 +17,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Home from "./(tabs)/home/home";
 import Bookmark from "./(tabs)/bookmark/bookmark";
+import profile from "./(tabs)/(profile)/_layout";
 
 export default function Main() {
   const StepperSettings = useContext(StepperContext);

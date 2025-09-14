@@ -15,13 +15,22 @@ const VerticalLine = ({
   return (
     <View
       style={{
-        width: width,
+        width: width + 2 * marginInline, // total width including marginInline
         height: height,
-        backgroundColor: color,
-        marginInline: marginInline,
-        borderRadius: 100,
+        justifyContent: "center", // vertical centering
+        alignItems: "center", // horizontal centering
       }}
-    ></View>
+    >
+      <View
+        style={{
+          position: "absolute",
+          width: width,
+          height: "100%",
+          backgroundColor: color,
+          borderRadius: 100,
+        }}
+      />
+    </View>
   );
 };
 

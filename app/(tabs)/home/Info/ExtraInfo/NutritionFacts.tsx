@@ -17,6 +17,7 @@ const NutritionFacts = ({
   const [calpercentage, setcalpercentage] = useState<number>(0.0);
   const [cpercentage, setCpercentage] = useState<number>(0.0);
   const [ppercentage, setPpercentage] = useState<number>(0.0);
+  const [reset, setReset] = useState<boolean>(false);
   const [rankingArray, setRankingArray] = useState<PieSlice[]>([]);
 
   function compare(element: PieSlice, other: PieSlice): number {
@@ -24,7 +25,7 @@ const NutritionFacts = ({
     return element.value < other.value ? 1 : -1;
   }
   useEffect(() => {
-    if (carbs && protein && calories) {
+    if (carbs != null && protein != null && calories != null) {
       const total: number = protein + carbs + calories;
       setcalpercentage((calories / total) * 100);
       setCpercentage((carbs / total) * 100);
@@ -32,33 +33,56 @@ const NutritionFacts = ({
       let currentarray = [
         { value: (calories / total) * 100, color: "#61DAFB" },
         { value: (carbs / total) * 100, color: "#42b883" },
-        { value: protein / total, color: "#fc4242" },
+        { value: (protein / total) * 100, color: "#fc4242" },
+      ];
+
+      setRankingArray([]);
+      const id = setTimeout(() => {
+        setRankingArray(currentarray.sort(compare));
+      }, 1000);
+      //setReset(false);
+      return () => {
+        if (id) clearTimeout(id);
+      };
+    }
+  }, [calories, carbs, protein]);
+
+  useEffect(() => {
+    if (carbs != null && protein != null && calories != null) {
+      const total: number = protein + carbs + calories;
+      setcalpercentage((calories / total) * 100);
+      setCpercentage((carbs / total) * 100);
+      setPpercentage((protein / total) * 100);
+      let currentarray = [
+        { value: (calories / total) * 100, color: "#61DAFB" },
+        { value: (carbs / total) * 100, color: "#42b883" },
+        { value: (protein / total) * 100, color: "#fc4242" },
       ];
       setRankingArray(currentarray.sort(compare));
     }
   }, []);
   return (
     <View style={styles.container}>
-      {rankingArray.length && (
-        <TestChart data={rankingArray} calories={calories} />
+      {rankingArray.length > 0 && (
+        <TestChart data={rankingArray} calories={calories ?? 0} />
       )}
 
       <InfoPod
         key={calpercentage}
-        value={calories ? calories.toFixed(1) : ""}
+        value={calories != null ? calories.toFixed(1) : ""}
         title={"Calories"}
         percentage={calpercentage.toFixed(2)}
         color="#61DAFB"
       />
 
       <InfoPod
-        value={protein ? protein.toFixed(1) : ""}
+        value={protein != null ? protein.toFixed(1) : ""}
         title={"Protein"}
         percentage={ppercentage.toFixed(2)}
         color="#fc4242"
       />
       <InfoPod
-        value={carbs ? carbs.toFixed(1) : ""}
+        value={carbs != null ? carbs.toFixed(1) : ""}
         title={"Carbs"}
         percentage={cpercentage.toFixed(2)}
         color="#42b883"
@@ -77,11 +101,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    maxHeight: "100%",
     padding: 10,
-    height: "auto",
+    height: 300,
     display: "flex",
     flexWrap: "wrap",
-    overflow: "hidden",
   },
 });

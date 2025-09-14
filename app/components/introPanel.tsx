@@ -15,10 +15,19 @@ const IntroPanel = () => {
   const [age, setAge] = useState<number>(AuthSettings.user?.age ?? 0);
   const [weight, setWeight] = useState<number>(AuthSettings.user?.weight ?? 0);
   const [height, setHeight] = useState<number>(AuthSettings.user?.height ?? 0);
-
-  function logout() {
+  useEffect(() => {
+    if (!user) return;
+    console.log("user");
+    console.log(user);
+    setAge(AuthSettings.user?.age ?? 0);
+    setHeight(AuthSettings.user?.height ?? 0);
+    setWeight(AuthSettings.user?.weight ?? 0);
+  }, [AuthSettings.user]);
+  async function logout() {
+    await AuthSettings.logout();
+    /*
     AuthSettings.setUser(null);
-    AuthSettings.setUserToken(null);
+    AuthSettings.setUserToken(null);*/
     StepperSettings.setStepper(null);
 
     delete axios.defaults.headers.common["Authorization"];
@@ -37,7 +46,7 @@ const IntroPanel = () => {
       >
         <Text
           style={{
-            color: "white",
+            color: "black",
             fontSize: 25,
             fontFamily: "Sans-Serrif",
             top: "10%",
@@ -55,10 +64,12 @@ const IntroPanel = () => {
         >
           <View
             style={{
-              backgroundColor: "#212020",
+              backgroundColor: "white",
               borderRadius: 100,
               padding: 10,
               alignItems: "center",
+              borderWidth: 1,
+              borderColor: "black",
             }}
           >
             <Image
@@ -73,7 +84,7 @@ const IntroPanel = () => {
       </View>
       <View
         style={{
-          backgroundColor: "#212020",
+          backgroundColor: "white",
           width: "90%",
           alignSelf: "center",
           borderRadius: 10,
@@ -81,6 +92,11 @@ const IntroPanel = () => {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
+          elevation: 4, // Android shadow
+          shadowColor: "#000", // iOS shadow
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
         }}
       >
         <View
@@ -111,7 +127,7 @@ const IntroPanel = () => {
         >
           <Text
             style={{
-              color: "#f2f2f2",
+              color: "black",
               fontSize: 25,
               top: "5%",
               position: "relative",
@@ -121,7 +137,7 @@ const IntroPanel = () => {
           </Text>
           <View
             style={{
-              backgroundColor: "#363636",
+              backgroundColor: "white",
               margin: 20,
               borderRadius: 10,
               display: "flex",
@@ -129,6 +145,11 @@ const IntroPanel = () => {
               alignItems: "center",
               justifyContent: "center",
               padding: 10,
+              elevation: 4, // Android shadow
+              shadowColor: "#000", // iOS shadow
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.1,
+              shadowRadius: 4,
             }}
           >
             <Spanner label="age" value={`${age} yo`} />

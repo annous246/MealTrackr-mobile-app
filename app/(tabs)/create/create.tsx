@@ -23,6 +23,10 @@ import LoadingComponent from "@/app/components/loadingComponent";
 import animations from "@/app/constants/animations";
 import LottieView from "lottie-react-native";
 import { TabsContext } from "@/app/context/TabsProvider";
+import { notificationContext } from "@/app/context/NotificationProvider";
+import VerticalLine from "@/app/components/VerticalLine";
+import { blue } from "react-native-reanimated/lib/typescript/Colors";
+import ImageGetter from "./ImageGetter";
 const { width, height } = Dimensions.get("window");
 
 const { API_URL } = Constants.expoConfig?.extra;
@@ -34,12 +38,14 @@ const Create = () => {
   const [carbs, setCarbs] = useState<string>("");
   const [portion, setPortion] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [measure, setMeasure] = useState<string>("g");
+  const [measure, setMeasure] = useState<string>("g/ml");
   const [loading, setLoading] = useState<boolean>(false);
   const [doneStatus, setDoneStatus] = useState<boolean>(false);
-  const descAnimation = useRef(new Animated.Value(150)).current;
-  const descPadAnimation = useRef(new Animated.Value(50)).current;
+  const descAnimation = useRef(new Animated.Value(200)).current;
+  const descPadAnimation = useRef(new Animated.Value(30)).current;
   const TabSettings = useContext(TabsContext);
+
+  const NotificationSettings = useContext(notificationContext);
   const submissionStyle = {
     flexDirection: "row",
     alignItems: "center",
@@ -59,6 +65,14 @@ const Create = () => {
   function handleDescription(value: string) {
     setDescription(value);
   }
+  function cleanUpInput() {
+    setPortion("");
+    setDescription("");
+    setFoodName("");
+    setProtein("");
+    setCarbs("");
+    setKcal("");
+  }
   async function submit() {
     setLoading(true);
     const res = await Post(API_URL + "/foods/create", {
@@ -68,7 +82,7 @@ const Create = () => {
       name: foodName,
       description: mode ? description : null,
       portion:
-        measure == "g" ? parseFloat(portion) : parseFloat(portion) * 1000,
+        measure == "g/ml" ? parseFloat(portion) : parseFloat(portion) * 1000,
     });
     if (res.ok === 1) {
       ///ok
@@ -77,8 +91,11 @@ const Create = () => {
         setDoneStatus(false);
       }, 1200);
       TabSettings.setFoodUpdate((prev: boolean) => !prev);
+      NotificationSettings.notify(res.message, 0);
+      cleanUpInput();
     } else {
       console.log("error");
+      NotificationSettings.notify(res.message, 2);
     }
     setLoading(false);
     console.log(res);
@@ -89,12 +106,12 @@ const Create = () => {
       Animated.timing(descAnimation, {
         useNativeDriver: false,
         duration: 200,
-        toValue: 150,
+        toValue: 200,
       }).start();
       Animated.timing(descPadAnimation, {
         useNativeDriver: false,
         duration: 200,
-        toValue: 50,
+        toValue: 30,
       }).start();
     } else {
       Animated.timing(descAnimation, {
@@ -111,7 +128,9 @@ const Create = () => {
   }, [mode]);
   return (
     <Pressable onPress={Keyboard.dismiss}>
-      <LoadingComponent loading={loading} />
+      {loading && (
+        <LoadingComponent text={"Hold On A Second"} loading={loading} />
+      )}
       <ScrollView
         style={styles.scrollContainer}
         contentContainerStyle={{ alignContent: "center", alignItems: "center" }}
@@ -119,15 +138,21 @@ const Create = () => {
         <FoodAdderHeader setMode={setMode} mode={mode} />
         <View
           style={{
-            width: "100%",
-            padding: 50,
+            width: "90%",
+            paddingVertical: 50,
             height: 150,
             backgroundColor: "white",
           }}
         >
-          <Text>Food Name</Text>
+          <Text
+            style={{
+              marginBottom: 10,
+            }}
+          >
+            Food Name
+          </Text>
           <TextInput
-            style={styles.input}
+            style={{ ...styles.input, height: 50 }}
             keyboardType="default"
             placeholder="Bolognese Pasta"
             onChangeText={handleFoodName}
@@ -138,26 +163,86 @@ const Create = () => {
         <Animated.View
           style={{
             width: "100%",
-            padding: descPadAnimation,
+            paddingVertical: descPadAnimation,
+            paddingInline: 15,
             maxHeight: descAnimation,
             overflow: "hidden",
             backgroundColor: "white",
           }}
         >
-          <Text>Description </Text>
-          <TextInput
-            style={styles.input}
-            keyboardType="default"
-            placeholder="Italien dish composed of Macaroni and meat-tomato sauce (Bolognese style)"
-            onChangeText={handleDescription}
-            value={description}
-          />
+          <View
+            style={{
+              flexDirection: "row",
+              width: "100%",
+              justifyContent: "space-evenly",
+              height: "100%",
+              backgroundColor: "white",
+              overflow: "hidden",
+            }}
+          >
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "flex-start",
+                width: "45%",
+                backgroundColor: "white",
+              }}
+            >
+              <Text
+                style={{
+                  marginBottom: 10,
+                }}
+              >
+                Description (Optional)
+              </Text>
+              <TextInput
+                style={{ ...styles.input, height: 80, maxWidth: "90%" }}
+                keyboardType="default"
+                placeholder="Italien dish composed of Macaroni and meat-tomato sauce (Bolognese style)"
+                onChangeText={handleDescription}
+                value={description}
+              />
+            </View>
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "flex-start",
+                width: "10%",
+                backgroundColor: "white",
+              }}
+            >
+              <VerticalLine
+                width={2}
+                height={"100%"}
+                color="gray"
+                marginInline={0}
+              />
+            </View>
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                width: "45%",
+                backgroundColor: "white",
+              }}
+            >
+              <ImageGetter
+                setKcal={setKcal}
+                setFoodName={setFoodName}
+                setProtein={setProtein}
+                setCarbs={setCarbs}
+                setLoading={setLoading}
+                setPortion={setPortion}
+              />
+            </View>
+          </View>
         </Animated.View>
         <View style={{ ...styles.row, width: "90%" }}>
           <View style={styles.column}>
             <Text>Calories</Text>
+
             <MeasurementInput
-              color="#3eb55d"
+              color="white"
               measure="Kcal"
               measurement={kcal}
               setMeasurement={setKcal}
@@ -166,7 +251,7 @@ const Create = () => {
           <View style={styles.column}>
             <Text>Protein</Text>
             <MeasurementInput
-              color="#FF6B4A"
+              color="white"
               measure="g"
               measurement={protein}
               setMeasurement={setProtein}
@@ -175,7 +260,7 @@ const Create = () => {
           <View style={styles.column}>
             <Text>Carbs</Text>
             <MeasurementInput
-              color="#F5C26B"
+              color="white"
               measure="g"
               measurement={carbs}
               setMeasurement={setCarbs}
@@ -185,7 +270,7 @@ const Create = () => {
         <View style={{ ...styles.column, width: "80%" }}>
           <Text>Portion</Text>
           <SwitchableMeasurementInput
-            color="#3e50b5"
+            color="white"
             measure={measure}
             measurement={portion}
             setMeasurement={setPortion}
@@ -246,8 +331,9 @@ const styles = StyleSheet.create({
   input: {
     borderRadius: 10,
     borderColor: "black",
-    borderWidth: 1,
+    borderWidth: 0.3,
     textAlign: "left",
+    padding: 5,
   },
   toggle: {
     margin: "auto",

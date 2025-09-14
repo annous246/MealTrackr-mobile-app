@@ -1,5 +1,12 @@
-import { Dimensions, StyleSheet, Text, View, ScrollView } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  ImageBackground,
+} from "react-native";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import CustomButton from "@/app/components/customButton";
 import icons from "@/app/constants/icons";
 import { Pressable, TextInput } from "react-native-gesture-handler";
@@ -12,6 +19,7 @@ import LoadingComponent from "@/app/components/loadingComponent";
 import Constants from "expo-constants";
 import { foodType } from "@/app/types";
 import { MotiView } from "moti";
+import { notificationContext } from "@/app/context/NotificationProvider";
 const { height: ScreenHeight, width: ScreenWidth } = Dimensions.get("window");
 
 const { API_URL } = Constants.expoConfig?.extra;
@@ -54,7 +62,7 @@ const ExtraInfo = ({
   const [currentCalories, setCurrentCalories] = useState<string>(
     calories ? calories.toString() : ""
   );
-
+  const NotificationSettings = useContext(notificationContext);
   async function save() {
     setLoading(true);
     if (parseFloat(currentCalories) != calories) {
@@ -66,14 +74,16 @@ const ExtraInfo = ({
       if (response.ok === 1) {
         setCurrentFood((prev: foodType) => {
           const newValue = parseFloat(currentCalories);
-          console.log("newValue carbs");
+          console.log("newValue cabs");
           console.log(newValue);
           console.log(typeof newValue);
           console.log("newValue carbs ");
           return { ...prev, calories: newValue };
         });
+        NotificationSettings.notify(response.message, 0);
       } else {
         console.log("error ", response.message);
+        NotificationSettings.notify(response.message, 2);
       }
       console.log(response);
     }
@@ -92,8 +102,10 @@ const ExtraInfo = ({
         setCurrentFood((prev: foodType) => {
           return { ...prev, carbs: newValue };
         });
+        NotificationSettings.notify(response.message, 0);
       } else {
         console.log("error ", response.message);
+        NotificationSettings.notify(response.message, 2);
       }
       console.log(response);
     }
@@ -109,8 +121,10 @@ const ExtraInfo = ({
         setCurrentFood((prev: foodType) => {
           return { ...prev, protein: newValue };
         });
+        NotificationSettings.notify(response.message, 0);
       } else {
         console.log("error ", response.message);
+        NotificationSettings.notify(response.message, 2);
       }
       console.log(response);
     }
@@ -125,15 +139,16 @@ const ExtraInfo = ({
         setCurrentFood((prev: foodType) => {
           return { ...prev, portion: newValue };
         });
+        NotificationSettings.notify(response.message, 0);
       } else {
         console.log("error ", response.message);
+        NotificationSettings.notify(response.message, 2);
       }
       console.log(response);
     }
 
     setLoading(false);
   }
-  useEffect(() => {}, [protein]);
 
   function handlePortion(input: string) {
     if (!input || !input.length) setCurrentPortion(input);
@@ -168,7 +183,7 @@ const ExtraInfo = ({
       }}
       transition={{
         type: "timing",
-        duration: 500,
+        duration: 600,
       }}
       style={{
         ...styles.container,
@@ -179,6 +194,7 @@ const ExtraInfo = ({
       }}
     >
       <ScrollView
+        showsVerticalScrollIndicator={false}
         ref={container}
         style={{
           width: "100%",
@@ -193,19 +209,28 @@ const ExtraInfo = ({
             width: "100%",
             borderRadius: 12,
             marginBottom: 10,
+            overflow: "hidden",
+            backgroundColor: "green",
+            height: 150,
           }}
         >
-          <CustomButton
-            title="X"
-            textStyle={{
-              textAlign: "center",
-              textVerticalAlign: "center",
-              color: "rgba(255,255,255,0.8)",
-            }}
-            style={styles.exitButton}
-            onPress={close}
-          />
-          <Text style={styles.title}>{name}</Text>
+          <ImageBackground
+            source={icons.foodplaceholder}
+            style={{ zIndex: -800, height: "100%" }}
+            width={700}
+          >
+            <CustomButton
+              title="X"
+              textStyle={{
+                textAlign: "center",
+                textVerticalAlign: "center",
+                color: "rgb(59, 60, 61)",
+              }}
+              style={styles.exitButton}
+              onPress={close}
+            />
+            <Text style={styles.title}>{name}</Text>
+          </ImageBackground>
         </View>
         <Text style={styles.smallText}>Portion Size (g)</Text>
         <TextInput
@@ -217,7 +242,7 @@ const ExtraInfo = ({
         <Text
           style={{
             fontSize: 15,
-            color: "white",
+            color: "rgb(87, 88, 89)",
             marginBottom: 20,
             marginTop: 30,
           }}
@@ -235,16 +260,16 @@ const ExtraInfo = ({
           onPress={editInfo}
           style={{
             ...styles.submit,
-            backgroundColor: "#4094f7",
             margin: 0,
             height: 30,
+            backgroundColor: "transparent",
           }}
           currentIcon={icons.dropdown}
           iconStyle={{
             width: "60%",
             height: "60%",
             color: "red",
-            tintColor: "white",
+            tintColor: "black",
           }}
         />
         <EditableInfo
@@ -265,7 +290,11 @@ const ExtraInfo = ({
           }}
           title="Save"
           onPress={save}
-          style={styles.submit}
+          style={{
+            ...styles.submit,
+            borderColor: "#4094f7",
+            borderWidth: 1,
+          }}
         />
       </ScrollView>
     </MotiView>
@@ -286,15 +315,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 25,
-    color: "white",
-    marginBottom: 30,
-    backgroundColor: "#5ca5fc",
     width: "80%",
     textAlign: "left",
     borderRadius: 10,
     padding: 10,
     textAlignVertical: "center",
-    height: 70,
+    height: "100%",
+    color: "black",
+    fontWeight: "bold",
   },
   input: {
     width: "100%",
@@ -308,7 +336,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   smallText: {
-    color: "white",
+    color: "rgb(87, 88, 89)",
     fontSize: 12,
   },
   exitButton: {
@@ -316,19 +344,24 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     padding: 5,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.8)",
+    borderColor: "rgb(59, 60, 61)",
     width: 30,
     height: 30,
-    marginRight: 0,
-    marginTop: 0,
+    marginRight: 1,
+    marginTop: 1,
     alignSelf: "flex-end",
     backgroundColor: "rgba(255,255,255,0.2)",
   },
   container: {
     position: "absolute",
-    backgroundColor: "#4094f7",
+    backgroundColor: "rgb(248, 248, 248)",
     zIndex: 100000,
     borderRadius: 15,
+    elevation: 4, // Android shadow
+    shadowColor: "#000", // iOS shadow
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   animatedContainer: {
     position: "relative",

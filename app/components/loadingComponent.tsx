@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     overflow: "hidden",
+    zIndex: 2104545450,
   },
   loading: {
     backgroundColor: "rgba(121, 121, 121, 0.35)",

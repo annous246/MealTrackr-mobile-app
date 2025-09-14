@@ -74,7 +74,7 @@ const Scroller3 = ({
           <TextInput
             placeholderTextColor="#ff9b7c"
             style={styles.input}
-            placeholder={"160cm"}
+            placeholder={"18"}
             keyboardType="numeric"
             value={age ? age.toString() : ""}
             onChangeText={handleage}

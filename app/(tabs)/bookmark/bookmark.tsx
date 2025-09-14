@@ -12,32 +12,58 @@ import { TabsContext } from "@/app/context/TabsProvider";
 import Constants from "expo-constants";
 import icons from "@/app/constants/icons";
 import FoodComponentStatic from "./FoodComponentStatic";
-import data from "@/testData"; // assuming you already have the initial data
+
 import { foodType } from "@/app/types";
+import { notificationContext } from "@/app/context/NotificationProvider";
+import { Get } from "@/app/services/api";
+import DatePicker from "../home/FoodComponents/DateControl/DatePicker";
+import { DateContext } from "@/app/context/DateProvider";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 const { API_URL } = Constants.expoConfig?.extra;
 
 const Bookmark = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [foodList, setFoodList] = useState<foodType[]>(data); // Initialize with data
+  const [foodList, setFoodList] = useState<foodType[]>([]); // Initialize with data
   const TabsSettings = useContext(TabsContext);
+  const DateSettings = useContext(DateContext);
 
+  const NotificationSettings = useContext(notificationContext);
   // Function to fetch food items
   const getFood = useCallback(async () => {
-    if (foodList.length === 0) {
-      // Only fetch if foodList is empty
-      setLoading(true);
-      const res = await Get(API_URL + "/foods/consumed/read", {});
-      if (res.ok === 1) {
-        setFoodList(res.data || []);
-      } else {
-        setFoodList([]); // In case of error
-        console.log("Error: " + res.message);
-      }
-      setLoading(false);
+    setLoading(true);
+    const res = await Get(API_URL + "/foods/consumed/read", {});
+    if (res.ok === 1) {
+      setFoodList(res.data || []);
+      NotificationSettings.notify(res.message, 0);
+    } else {
+      setFoodList([]); // In case of error
+      console.log("Error: " + res.message);
+      NotificationSettings.notify(res.message, 2);
     }
+    setLoading(false);
   }, [foodList.length]); // Effect only if foodList is empty
+
+  const getPreviouslyConsumed = async (
+    day: number,
+    year: number,
+    month: number
+  ) => {
+    setLoading(true);
+    const res = await Get(API_URL + "/foods/consumed/readPast", {
+      params: { day: day, month: month, year: year },
+    });
+    if (res.ok === 1) {
+      setFoodList(res.data || []);
+      NotificationSettings.notify(res.message, 0);
+    } else {
+      setFoodList([]); // In case of error
+      console.log("Error: " + res.message);
+      NotificationSettings.notify(res.message, 2);
+    }
+    console.log(res);
+    setLoading(false);
+  };
   useEffect(() => {
     getFood();
   }, []);
@@ -45,6 +71,22 @@ const Bookmark = () => {
     // Fetch data when the tab is accessed and `foodUpdate` changes
     getFood();
   }, [TabsSettings.foodUpdate]);
+
+  async function getFoods() {
+    if (DateSettings.currentDate.getDate() == new Date().getDate()) {
+      await getFood();
+    } else {
+      await getPreviouslyConsumed(
+        DateSettings.currentDate.getDate(),
+        DateSettings.currentDate.getFullYear(),
+        DateSettings.currentDate.getMonth() + 1
+      );
+    }
+  }
+  useEffect(() => {
+    //if changed pull
+    getFoods();
+  }, [DateSettings.currentDate]);
 
   // Handle render of food items
   const renderItem = ({ item }: { item: foodType }) => {
@@ -54,9 +96,6 @@ const Bookmark = () => {
   return (
     <View style={{ position: "relative" }}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.edit}>
-          <Image style={{ width: "60%", height: "60%" }} source={icons.edit} />
-        </TouchableOpacity>
         <Text style={styles.title}>Daily Consumed Meals</Text>
         <View style={styles.premium}>
           <Image
@@ -65,15 +104,17 @@ const Bookmark = () => {
           />
         </View>
       </View>
+      <DatePicker disabled={false} />
 
       <FlatList
         data={foodList}
+        style={{ height: screenHeight - 310 }}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()} // Assuming `id` is a unique identifier for each item
         contentContainerStyle={styles.flatListContent}
         ListEmptyComponent={<Text>Empty List</Text>}
         ListHeaderComponent={
-          <TouchableOpacity onPress={getFood}>
+          <TouchableOpacity onPress={getFoods}>
             <Image
               style={{ width: 20, height: 20, marginTop: 5 }}
               source={icons.refresh}
@@ -88,7 +129,7 @@ const Bookmark = () => {
           // You could trigger additional fetch here if needed
         }}
         refreshing={loading}
-        onRefresh={getFood} // Pull-to-refresh functionality
+        onRefresh={getFoods} // Pull-to-refresh functionality
       />
     </View>
   );

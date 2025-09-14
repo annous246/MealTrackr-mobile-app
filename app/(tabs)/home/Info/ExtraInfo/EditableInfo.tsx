@@ -27,7 +27,6 @@ const EditableInfo = ({
   setCurrentProtein,
 }: EditableInfoProps) => {
   const heightAnimate = useSharedValue(status ? 100 : 0);
-  const [test, setTest] = useState<boolean>(false);
   function handleCarbs(input: string) {
     if (!input || !input.length) setCurrentCarbs(input);
     if (
@@ -60,31 +59,27 @@ const EditableInfo = ({
       return;
     setCurrentCalories(input);
   }
-  const scaleY = useSharedValue(status ? 1 : 0);
   const opacityAnimate = useSharedValue(status ? 1 : 0);
 
   useEffect(() => {
-    scaleY.value = withTiming(status ? 1 : 0, { duration: 500 });
-    opacityAnimate.value = withTiming(status ? 1 : 0, { duration: 200 });
-    heightAnimate.value = withTiming(status ? 100 : 0, { duration: 100 });
+    if (status) {
+      heightAnimate.value = withTiming(status ? 100 : 0, { duration: 350 });
+      opacityAnimate.value = withTiming(status ? 1 : 0, { duration: 400 });
+    } else {
+      heightAnimate.value = withTiming(status ? 100 : 0, { duration: 400 });
+      opacityAnimate.value = withTiming(status ? 1 : 0, { duration: 300 });
+    }
   }, [status]);
 
   const inputAnimate = useAnimatedStyle(() => {
     return {
-      transform: [{ scaleY: scaleY.value }],
       opacity: opacityAnimate.value,
       height: heightAnimate.value,
     };
   });
   return (
-    <MotiView
-      from={{ height: 0, opacity: 0 }}
-      animate={{ height: status ? 100 : 0, opacity: status ? 1 : 0 }}
-      transition={{
-        type: "timing",
-        duration: 250,
-      }}
-      style={[styles.container, { overflow: "hidden" }]}
+    <Animated.View
+      style={[styles.container, { overflow: "hidden" }, inputAnimate]}
     >
       <View style={styles.column}>
         <Text>Calories</Text>
@@ -113,7 +108,7 @@ const EditableInfo = ({
           onChangeText={handleCarbs}
         />
       </View>
-    </MotiView>
+    </Animated.View>
   );
 };
 

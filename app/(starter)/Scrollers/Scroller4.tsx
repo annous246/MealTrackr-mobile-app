@@ -31,7 +31,7 @@ const Scroller4 = ({ pagination: pagination }: { pagination: number }) => {
           marginBottom: 500,
         }}
       >
-        {pagination + 1 == 4 && (
+        {pagination + 1 == 5 && (
           <>
             <LottieView
               style={{ width: "80%", height: "80%", backgroundColor: "white" }}

@@ -29,6 +29,15 @@ const ProgressBar = ({ pagination: pagination }: { pagination: number }) => {
       />
 
       <Dot pagination={pagination} value={3} />
+      <Line
+        backgroundColor="transparent"
+        width={20}
+        height={3}
+        marginBottom={0}
+        marginTop={0}
+      />
+
+      <Dot pagination={pagination} value={4} />
     </View>
   );
 };

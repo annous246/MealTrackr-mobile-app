@@ -10,6 +10,7 @@ import {
 import React, { useRef } from "react";
 import CustomButton from "@/app/components/customButton";
 import { alreadyDotted } from "@/app/utils/utils";
+import VerticalLine from "@/app/components/VerticalLine";
 
 const SwitchableMeasurementInput = ({
   measurement: measurement,
@@ -26,7 +27,7 @@ const SwitchableMeasurementInput = ({
 }) => {
   const measureAnimate = useRef(new Animated.Value(0)).current;
   function handleMeasure() {
-    if (measure == "g") {
+    if (measure == "g/ml") {
       Animated.timing(measureAnimate, {
         useNativeDriver: false,
         duration: 200,
@@ -41,7 +42,7 @@ const SwitchableMeasurementInput = ({
       }, 200);
 
       setTimeout(() => {
-        setMeasure("Kg");
+        setMeasure("Kg/L");
       }, 200);
     } else {
       Animated.timing(measureAnimate, {
@@ -58,7 +59,7 @@ const SwitchableMeasurementInput = ({
       }, 200);
 
       setTimeout(() => {
-        setMeasure("g");
+        setMeasure("g/ml");
       }, 200);
     }
   }
@@ -76,20 +77,23 @@ const SwitchableMeasurementInput = ({
   return (
     <View style={{ ...styles.container, backgroundColor: color }}>
       <TextInput
-        style={styles.input}
+        style={{ ...styles.input, height: 40 }}
         keyboardType="numeric"
         placeholder="10.5"
         onChangeText={handleMeasurement}
         value={measurement}
       />
-
+      <VerticalLine height={"80%"} width={1} marginInline={2} color="black" />
       <TouchableOpacity
         onPress={handleMeasure}
-        style={{ ...styles.measure, backgroundColor: "#4d5cb3" }}
+        style={{
+          ...styles.measure,
+          backgroundColor: "rgba(156, 156, 156,0.2)",
+        }}
       >
         <Animated.Text
           style={{
-            color: "white",
+            color: "black",
             fontWeight: "bold",
             textAlign: "center",
             textAlignVertical: "center",
@@ -111,13 +115,13 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     display: "flex",
     padding: 1,
-    margin: "0%",
+    margin: "auto",
     marginLeft: "5%",
-    width: "15%",
-    borderRadius: 10,
-    height: "60%",
+    width: 70,
+    height: 40,
     alignItems: "center",
     justifyContent: "center",
+    borderRadius: 5,
   },
   input: {
     borderRadius: 10,
@@ -127,7 +131,7 @@ const styles = StyleSheet.create({
   },
   container: {
     borderColor: "black",
-    borderWidth: 1,
+    borderWidth: 0.3,
     overflow: "hidden",
     display: "flex",
     alignItems: "center",

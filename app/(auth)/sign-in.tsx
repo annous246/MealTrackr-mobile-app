@@ -18,17 +18,37 @@ import { Colors } from "react-native/Libraries/NewAppScreen";
 import LoadingComponent from "../components/loadingComponent";
 import { Post } from "../services/api";
 import { AuthProvider, AuthContext } from "../context/AuthProvider";
-
+import * as Google from "expo-auth-session/providers/google";
+import * as WebBrowser from "expo-web-browser";
 import Constants from "expo-constants";
 import { ScrollView } from "react-native-gesture-handler";
 import axios from "axios";
+import { notificationContext } from "../context/NotificationProvider";
+import * as AuthSession from "expo-auth-session";
 
 const { API_URL } = Constants.expoConfig?.extra;
 const SignIn = () => {
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    androidClientId:
+      "178781214114-7rr6lles6cee8nbk80fn60p0v75mi0j2.apps.googleusercontent.com",
+    iosClientId: "YOUR_IOS_CLIENT_ID",
+    webClientId:
+      "178781214114-et2kc82hatg50unib9kq6s1vsomth0ht.apps.googleusercontent.com",
+  });
+  useEffect(() => {
+    if (response?.type === "success") {
+      const { authentication } = response;
+      console.log("Access Token:", authentication?.accessToken);
+      // You can now use this token to call Google APIs or your backend.
+    }
+  }, [response]);
   const AuthSettings = useContext(AuthContext);
-
+  const NotificationSettings = useContext(notificationContext);
   async function signIn(password: string, email: string) {
     console.log("d");
+    console.log("AuthSession.getRedirectUrl()");
+    console.log(AuthSession.getDefaultReturnUrl());
+
     console.log(API_URL + "/auth/sign-up");
     const ret = await Post(API_URL + "/auth/sign-in", {
       password: password,
@@ -38,16 +58,15 @@ const SignIn = () => {
     if (ret.ok == 1) {
       //save jwt
       console.log(ret);
-      await AuthSettings.setUser(ret.data.user);
-      await AuthSettings.setUserToken(ret.data.token);
+      await AuthSettings.login(ret.data.user, ret.data.token);
       axios.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${ret.data.token}`;
       //  router.push("/");
-    }
+      NotificationSettings.notify(ret.message, 0);
+    } else NotificationSettings.notify(ret.message, 2);
   }
   useEffect(() => {
-    console.log("distant change");
     console.log(AuthSettings.user);
   }, [AuthSettings.user]);
 
@@ -101,24 +120,16 @@ const SignIn = () => {
     router.push("/");
   }
   function handleEmail(text: string) {
-    if (text && text.length) {
-      setEmail(text);
-    }
+    setEmail(text);
   }
   function handleUsername(text: string) {
-    if (text && text.length) {
-      setUsername(text);
-    }
+    setUsername(text);
   }
   function handlePassword(text: string) {
-    if (text && text.length) {
-      setPassword(text);
-    }
+    setPassword(text);
   }
   function handleConfirmPassword(text: string) {
-    if (text && text.length) {
-      setConfirmPassword(text);
-    }
+    setConfirmPassword(text);
   }
   const singupStyle = {
     flex: 1,
@@ -181,22 +192,25 @@ const SignIn = () => {
             </View>
           </TouchableOpacity>
 
-          <Text style={styles.titleStyle}>Create an{"\n"} account</Text>
+          <Text style={styles.titleStyle}>Log into{"\n"}your account</Text>
           <Text style={styles.subTitleStyle}>Login In with</Text>
           <View style={styles.subContainer}>
             <CustomButton
+              onPress={() => {} /*promptAsync()*/}
               currentIcon={icons.google}
-              title="Google"
+              title={"Google \n (soon)"}
               style={singupStyle}
               iconStyle={iconStyle}
               textStyle={textStyle}
+              disabled={true}
             />
             <CustomButton
               currentIcon={icons.home}
-              title="Linked-In"
+              title={"Linked-In \n (soon)"}
               style={singupStyle}
               iconStyle={iconStyle}
               textStyle={textStyle}
+              disabled={true}
             />
           </View>
 
@@ -221,6 +235,7 @@ const SignIn = () => {
             <View style={styles.inputField}>
               <Text style={styles.inputLabel}>Password</Text>
               <TextInput
+                secureTextEntry={true}
                 ref={passwordInput}
                 onFocus={handlePsFocus}
                 onBlur={handlePsUnfocus}
@@ -275,6 +290,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 40,
     transform: "translateY(-100%)",
+    textAlign: "center",
   },
   subTitleStyle: {
     color: "#595959",
@@ -355,5 +371,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: "#ff9b7c",
     color: "#ff9b7c",
+    height: 50,
   },
 });

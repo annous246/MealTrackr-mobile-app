@@ -62,7 +62,7 @@ const Steppers = () => {
   }
   async function changePage() {
     const checked = await checkPagination(pagination + 1);
-    if (checked) setPagination((prev: number) => Math.min(3, prev + 1));
+    if (checked) setPagination((prev: number) => Math.min(4, prev + 1));
 
     setNext(false);
   }
@@ -72,10 +72,11 @@ const Steppers = () => {
     let weight: any = AuthSettings.user.weight ?? null;
     let height: any = AuthSettings.user.height ?? null;
     let age: any = AuthSettings.user.age ?? null;
+    let gender: any = AuthSettings.user.gender ?? null;
     console.log(API_URL + "/starter/stepper_finished");
     const res = await Post(API_URL + "/starter/stepper_finished", {
       user: AuthSettings.user,
-      analytics: { height: height, weight: weight, age: age },
+      analytics: { height: height, weight: weight, gender: gender, age: age },
     });
     if (res.ok === 1) {
       setLoading(false);
@@ -89,7 +90,7 @@ const Steppers = () => {
 
   useEffect(() => {
     if (next) {
-      if (pagination == 3) {
+      if (pagination == 4) {
         //finished
         console.log("final fct************");
         finilizeSteppers();

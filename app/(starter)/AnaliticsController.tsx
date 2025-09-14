@@ -53,14 +53,14 @@ const AnaliticsController = ({
         disabled={pagination == 0 || loading}
       />
       <CustomButton
-        title={pagination + 1 != 4 ? "Next" : "Finish"}
+        title={pagination + 1 != 5 ? "Next" : "Finish"}
         style={buttonStyle}
         textStyle={textButton}
         onPress={() => {
           console.log("next");
           setNext(true);
         }}
-        disabled={pagination == 4 || loading}
+        disabled={pagination == 5 || loading}
       />
     </View>
   );

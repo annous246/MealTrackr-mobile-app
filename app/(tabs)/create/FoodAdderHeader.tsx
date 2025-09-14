@@ -31,15 +31,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     justifyContent: "space-around",
-    backgroundColor: "#3e50b5",
+    backgroundColor: "white",
     paddingVertical: 20,
     height: 90,
+    borderBottomWidth: 1,
+    borderBottomColor: "white",
+    borderRadius: 1,
   },
 
   title: {
     fontSize: 25,
     fontWeight: "bold",
     fontFamily: "monospace",
-    color: "white",
+    color: "black",
   },
 });
