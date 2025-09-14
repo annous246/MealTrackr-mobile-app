@@ -1,24 +1,40 @@
-![adder](https://github.com/user-attachments/assets/6b2c139b-810c-4f28-a41e-d63f5f773d15)# 🍔 Swipeat - Meal Tracking App
+# 🍔 Swipeat
 
-A simple and fast way to log meals daily and stay on track.
+Swipeat is a simple and efficient meal tracking app.  
+Add meals once, then swipe daily to log them — fast, easy, and consistent.
+
+---
 
 ## ✨ Features
-- Add meals once, swipe daily to log them
-- Track nutrition and calories
-- Clean and simple UI
 
+- 🥗 Add your meals one time only
+- 👆 Swipe daily to log meals instantly
+- 📊 Track your eating habits with ease
+- 📱 Clean and minimal UI
 ## 🚀 Installation
 
 ```bash
-# Clone repo
+
+
+## 🚀 Getting Started
+
+### Prerequisites
+- [Node.js](https://nodejs.org/) (LTS recommended)
+- [Expo CLI](https://docs.expo.dev/get-started/installation/)
+- [Expo Go app](https://expo.dev/go?sdkVersion=52&platform=android&device=true)
+
+### Installation
+
+```bash
+# Clone the repository
 git clone https://github.com/username/swipeat.git
 
-# Install dependencies
+# Navigate into the project
 cd swipeat
+
+# Install dependencies
 npm install
-
-# Run on Android
-npx react-native run-android
-
-# Run on iOS
-npx react-native run-ios
+npx expo start --lan
+```
+## 📱 Screenshots
+<p align="center"> <img src="assets/screenshots/home.png" alt="Home Screen" width="250"/> <img src="assets/screenshots/log.png" alt="Log Meal Screen" width="250"/> </p>
