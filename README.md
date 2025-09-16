@@ -3,7 +3,7 @@
 
 # <h1 align="center">Swipeat</h1>
 <p align="center">
-Swipeat is a simple and efficient meal tracking  <strong> cross-platform </strong>App.  
+Swipeat is a simple and efficient meal tracking <strong> AI Powered </strong>  <strong> cross-platform </strong>App.  
 Add meals once, then swipe daily to log them — fast, easy, and consistent.
 </p>
 
